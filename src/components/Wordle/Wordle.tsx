@@ -3,6 +3,7 @@ import { WORDLE_KEYBOARD_LETTERS, MAX_WORD_LENGTH } from "./constants";
 import { useCharactersValidation } from "./hooks";
 import { Keyboard, CharacterGrid } from "..";
 import { actionListener, ActionListenerKeys } from "../../utils";
+import { useCallback } from "react";
 
 const getGridBorderStatusColor = (isValid: boolean | null) => {
   if (isValid === null) {
@@ -17,6 +18,10 @@ const getGridBorderStatusColor = (isValid: boolean | null) => {
 function Wordle() {
   const { characters, isValidWord } = useCharactersValidation();
 
+  const handleKeyPress = useCallback((char: string) => {
+    actionListener.emit(ActionListenerKeys.WORDLE_KEY_PRESS, char);
+  }, []);
+
   return (
     <div className="wordle-container">
       <CharacterGrid
@@ -25,9 +30,7 @@ function Wordle() {
         numSquares={MAX_WORD_LENGTH}
       />
       <Keyboard
-        onKeyPress={(char: string) =>
-          actionListener.emit(ActionListenerKeys.WORDLE_KEY_PRESS, char)
-        }
+        onKeyPress={handleKeyPress}
         keyboardLetters={WORDLE_KEYBOARD_LETTERS}
       />
     </div>
